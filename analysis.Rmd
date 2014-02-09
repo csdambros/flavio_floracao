@@ -1,0 +1,151 @@
+
+Flora√ß√£o e Frutifica√ß√£o ao longo de gradientes ambientais
+============
+
+Fl√°vio Rodrigues; Cristian Dambros e C√≠ntia Freitas
+-------------
+
+```{r load packages, echo= FALSE, results='hide'}
+
+library(knitr)
+library(reshape)
+library(ggplot2)
+library(mgcv)
+
+```
+
+Importa√ß√£o de tabelas
+```{r Importing tables, results='hide'}
+
+DIR <- "../Planilha/"
+
+flor<-read.csv(paste(DIR,"Flor.csv",sep=""))
+fruto<-read.csv(paste(DIR,"Fruto.csv",sep=""))
+ambiente<-read.csv(paste(DIR,"Environment.csv",sep=""),row.names=1)#L72500 ausente
+
+```
+
+Transforming tables to the best formats
+```{r}
+
+flor.long<-melt(flor,variable_name="Month")
+
+flor.short<-aggregate(flor.long$value,list(flor.long$Parcela,flor.long$Month),sum)
+flor.short$Group.2.num<-as.numeric(flor.short$Group.2)
+
+
+fruto.long<-melt(fruto,variable_name="Month")
+
+fruto.short<-aggregate(fruto.long$value,list(fruto.long$Parcela,fruto.long$Month),sum)
+fruto.short$Group.2.num<-as.numeric(fruto.short$Group.2)
+
+###
+
+qplot(Group.2,x,data=flor.short,size=2,color=Group.1,type="l")
+
+summary(lm(x~as.numeric(Group.2),data=flor.short))
+
+plot(x~as.numeric(Group.2),data=flor.short)
+abline(lm(x~as.numeric(Group.2),data=flor.short))
+ 
+plot(flor.short$Group.2,flor.short$x)
+plot.default(flor.short$Group.2,flor.short$x)
+
+by(flor.short,flor.short$Group.1,function(x)points(x$Group.2,x$x,type="l"))
+
+points(fruto.short$Group.2,fruto.short$x,col=2)
+
+by(fruto.short,fruto.short$Group.1,function(x)points(x$Group.2,x$x,type="l",col=2))
+
+```
+
+
+```{r, "temporal_trend_florefruto"}
+
+par("oma")
+
+par(mfrow=c(2,1),mar=c(0,4,1,1),oma=c(3,0,0,0))
+
+M1<-list()
+
+plot(flor.short$Group.2,flor.short$x,axes=F)
+box();axis(2)
+
+for(i in levels(flor.short$Group.1)){
+
+summary(M1[[i]]<-glm(x~sin(Group.2.num*2*pi/12)+cos(Group.2.num*2*pi/12),
+data=flor.short[flor.short[,1]==i,],family="poisson"))
+
+points(seq(1,8,by=.1),predict(M1[[i]],type="response",newdata=data.frame(Group.2.num=seq(1,8,by=.1))),type="l",col="dark grey",lwd=2)
+
+}
+
+plot(flor.short$Group.2,flor.short$x,add=T,axes=F)
+
+###########
+
+temp.coefs.flor<-t(data.frame(lapply(M1,coef)))
+
+summary(lm(temp.coefs.flor[,1]~ambiente$Sand))
+summary(lm(temp.coefs.flor[,2]~ambiente$Sand))
+summary(lm(temp.coefs.flor[,3]~ambiente$Sand))
+
+#Somente uma relacao marginalmente significativa com areia
+#N„o h· interaÁ„o entre o tempo e areia. Parcelas com mais areia n„o flutuam mais ou menos do que as outras
+
+M2<-list()
+
+plot(fruto.short$Group.2,fruto.short$x,border=0,ylim=c(0,80))
+
+for(i in levels(fruto.short$Group.1)){
+
+summary(M2[[i]]<-glm(x~sin(Group.2.num*2*pi/12)+cos(Group.2.num*2*pi/12),
+data=fruto.short[fruto.short[,1]==i,],family="poisson"))
+
+points(seq(1,8,by=.1),predict(M2[[i]],type="response",newdata=data.frame(Group.2.num=seq(1,8,by=.1))),type="l",col="dark grey",lwd=2)
+
+}
+
+plot(fruto.short$Group.2,fruto.short$x,add=T)
+
+###########
+
+nrow(temp.coefs.fruto)
+
+temp.coefs.fruto<-t(data.frame(lapply(M2,coef)))
+
+summary(lm(temp.coefs.fruto[,1]~ambiente$Sand))
+summary(lm(temp.coefs.fruto[,2]~ambiente$Sand))
+summary(lm(temp.coefs.fruto[,3]~ambiente$Sand))
+
+summary(lm(temp.coefs.fruto[,3]~temp.coefs.flor[,3]))
+
+#Somente uma relacao marginalmente significativa com areia
+#N„o h· interaÁ„o entre o tempo e areia. Parcelas com mais areia n„o flutuam mais ou menos do que as outras
+
+```
+
+
+
+```{r}
+
+ver<-by(flor,flor$Especie,data.frame,simplify=TRUE)
+
+#####
+
+```
+
+
+```{r Export .R file, echo=FALSE, results='hide'}
+
+#O codigo a seguir nao tem importancia (nao rode se nao souber o q ta fazendo)
+#Stangle("analysis.Rnw", encoding="ASCII")
+
+purl("analysis.Rmd")
+
+knit2html("analysis.Rmd")
+
+
+#Fim
+```
+
