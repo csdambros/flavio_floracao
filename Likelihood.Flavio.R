@@ -6,15 +6,6 @@
 # The second distribution calcullates the probability that a given number of fruits remain as fruits in the next month
 # Both functions look at all combinations of flowers and fruits that could produce the observed number of fruits in the next month, and then calculates probabilities for all these combinations.
 
-#N<-c(6,6)
-
-#N<-6
-
-#FR=4
-#FL=2
-
-#pFL=0.4
-#pFR=0.6
 
 
 # Calculates NLL using fixed probabilities
@@ -61,46 +52,57 @@ NLL.flavio.logis<-function(N,FR,FL,covars=NULL,parms=rep(0,(length(covars)*2)+2)
 }
 
 
+# Tests
 
-#log(Like.flavio(N,FR,FL,pFR,.6))
+#N<-c(6,6)
 
-NLL.flavio1(N,FR,FL,pFR,pFL)
+#N<-6
 
-pFR.test<-seq(0,1,length=50)
-pFL.test<-seq(0,1,length=50)
+#FR=4
+#FL=2
 
-like.surf<-matrix(NA,length(pFR.test),length(pFL.test))
+#pFL=0.4
+#pFR=0.6
 
-for (i in 1:length(pFR.test)){
-  for (j in 1:length(pFL.test)){
-    
-    like.surf[i,j]<-NLL.flavio1(c(22,16,16),16,6,pFR.test[i],pFL.test[j])
-    
-  }}
-
-
-
-NLL.flavio.logis(N,FR,FL,covars=data.frame(1:10))
-
-
-NLL.flavio.logis(rep(N,10),FR,FL,covars=NULL)
-
-NLL.flavio.logis(rep(N,1),FR,FL,covars=data.frame(1:10),parms=c(a=0,log(.6/(1-.6)),a2=0,log(.6/(1-.6))))
-
-NLL.flavio1(N,FR,FL,0.6,0.6)
-
-
-
-
-
-# plot the negative log likelihood (smaller values = higher likelihood)
-
-image(like.surf,col=topo.colors(100),xlab="pFlower",ylab="pFruit")
-contour(like.surf,add=T)
-
-image(exp(-like.surf),col=topo.colors(100))
-contour(exp(-like.surf),add=T)
-
-
-persp(like.surf,zlim=c(0,57),expand=.8,col="lightblue", shade = 0.9,border=NA)
-
+# #log(Like.flavio(N,FR,FL,pFR,.6))
+# 
+# NLL.flavio1(N,FR,FL,pFR,pFL)
+# 
+# pFR.test<-seq(0,1,length=50)
+# pFL.test<-seq(0,1,length=50)
+# 
+# like.surf<-matrix(NA,length(pFR.test),length(pFL.test))
+# 
+# for (i in 1:length(pFR.test)){
+#   for (j in 1:length(pFL.test)){
+#     
+#     like.surf[i,j]<-NLL.flavio1(c(22,16,16),16,6,pFR.test[i],pFL.test[j])
+#     
+#   }}
+# 
+# 
+# 
+# NLL.flavio.logis(N,FR,FL,covars=data.frame(1:10))
+# 
+# 
+# NLL.flavio.logis(rep(N,10),FR,FL,covars=NULL)
+# 
+# NLL.flavio.logis(rep(N,1),FR,FL,covars=data.frame(1:10),parms=c(a=0,log(.6/(1-.6)),a2=0,log(.6/(1-.6))))
+# 
+# NLL.flavio1(N,FR,FL,0.6,0.6)
+# 
+# 
+# 
+# 
+# 
+# # plot the negative log likelihood (smaller values = higher likelihood)
+# 
+# image(like.surf,col=topo.colors(100),xlab="pFlower",ylab="pFruit")
+# contour(like.surf,add=T)
+# 
+# image(exp(-like.surf),col=topo.colors(100))
+# contour(exp(-like.surf),add=T)
+# 
+# 
+# persp(like.surf,zlim=c(0,57),expand=.8,col="lightblue", shade = 0.9,border=NA)
+# 
