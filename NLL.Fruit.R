@@ -9,7 +9,7 @@
 
 
 # Calculates NLL using fixed probabilities
-NLL.flavio1<-function(N,FR,FL,pFR,pFL){
+NLL.fruit<-function(N,FR,FL,pFR,pFL){
   
   all.var<-data.frame(N,FR,FL,pFR,pFL)
   for(a in names(all.var))assign(a,unlist(all.var[a]))
@@ -37,7 +37,7 @@ NLL.flavio1<-function(N,FR,FL,pFR,pFL){
 # If no covariates are provided (covars = NULL), then the probabilities are fixed with average values (just intercept)
 # The probabilities are logistic functions of covariates prob.fruit=exp(a+bx)/(1+exp(a+bx))
 
-NLL.flavio.logis<-function(N,FR,FL,covars=NULL,parms=rep(0,(length(covars)*2)+2)){
+NLL.fruit.logis<-function(N,FR,FL,covars=NULL,parms=rep(0,(length(covars)*2)+2)){
   
   linear.pFR<-as.matrix(cbind(1,covars))%*%parms[1:(length(parms)/2)]
   linear.pFL<-as.matrix(cbind(1,covars))%*%parms[(1+length(parms)/2):length(parms)]
@@ -47,7 +47,7 @@ NLL.flavio.logis<-function(N,FR,FL,covars=NULL,parms=rep(0,(length(covars)*2)+2)
   
   #c(pFR,pFL)
   
-  NLL.flavio1(N,FR,FL,pFR,pFL)
+  NLL.fruit(N,FR,FL,pFR,pFL)
   
 }
 
@@ -64,9 +64,9 @@ NLL.flavio.logis<-function(N,FR,FL,covars=NULL,parms=rep(0,(length(covars)*2)+2)
 #pFL=0.4
 #pFR=0.6
 
-# #log(Like.flavio(N,FR,FL,pFR,.6))
+# #log(Like.fruit(N,FR,FL,pFR,.6))
 # 
-# NLL.flavio1(N,FR,FL,pFR,pFL)
+# NLL.fruit(N,FR,FL,pFR,pFL)
 # 
 # pFR.test<-seq(0,1,length=50)
 # pFL.test<-seq(0,1,length=50)
@@ -76,20 +76,20 @@ NLL.flavio.logis<-function(N,FR,FL,covars=NULL,parms=rep(0,(length(covars)*2)+2)
 # for (i in 1:length(pFR.test)){
 #   for (j in 1:length(pFL.test)){
 #     
-#     like.surf[i,j]<-NLL.flavio1(c(22,16,16),16,6,pFR.test[i],pFL.test[j])
+#     like.surf[i,j]<-NLL.fruit(c(22,16,16),16,6,pFR.test[i],pFL.test[j])
 #     
 #   }}
 # 
 # 
 # 
-# NLL.flavio.logis(N,FR,FL,covars=data.frame(1:10))
+# NLL.fruit.logis(N,FR,FL,covars=data.frame(1:10))
 # 
 # 
-# NLL.flavio.logis(rep(N,10),FR,FL,covars=NULL)
+# NLL.fruit.logis(rep(N,10),FR,FL,covars=NULL)
 # 
-# NLL.flavio.logis(rep(N,1),FR,FL,covars=data.frame(1:10),parms=c(a=0,log(.6/(1-.6)),a2=0,log(.6/(1-.6))))
+# NLL.fruit.logis(rep(N,1),FR,FL,covars=data.frame(1:10),parms=c(a=0,log(.6/(1-.6)),a2=0,log(.6/(1-.6))))
 # 
-# NLL.flavio1(N,FR,FL,0.6,0.6)
+# NLL.fruit(N,FR,FL,0.6,0.6)
 # 
 # 
 # 
