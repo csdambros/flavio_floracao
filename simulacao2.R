@@ -1,4 +1,6 @@
 
+
+
 n.month=15
 n.plot=5
 
@@ -68,7 +70,7 @@ like.surf<-matrix(NA,length(pFR.test),length(pFL.test))
 for (i in 1:length(pFR.test)){
 for (j in 1:length(pFL.test)){
 
-like.surf[i,j]<-NLL.flavio1(teste1$fruto,teste1$data.flor,teste1$past.fruto,pFR.test[i],pFL.test[j])
+like.surf[i,j]<-NLL.fruit(teste1$fruto,teste1$data.flor,teste1$past.fruto,pFR.test[i],pFL.test[j])
 
 }}
 
@@ -78,7 +80,7 @@ contour(like.surf,add=T,nlevels=10)
 image(exp(-like.surf),col=topo.colors(100),xlab="pFlower",ylab="pFruit")
 contour(exp(-like.surf),add=T)
 
-resu<-optim(par=list(pFR=0.5,pFL=0.5),function(x)NLL.flavio1(N=teste1$fruto,FL=teste1$data.flor,FR=teste1$past.fruto,x[1],x[2]))
+resu<-optim(par=list(pFR=0.5,pFL=0.5),function(x)NLL.fruit(N=teste1$fruto,FL=teste1$data.flor,FR=teste1$past.fruto,x[1],x[2]))
 points(resu$par[2],resu$par[1],pch=3,cex=1)
 
 
@@ -86,9 +88,9 @@ points(resu$par[2],resu$par[1],pch=3,cex=1)
 
 resu2<-optim(par=list(a=0,b=0,c=0,d=0),
 function(x)
-NLL.flavio.logis(
+NLL.fruit.logis(
 N=teste1$fruto,
-FR=teste1$past.frutoT,
+FR=teste1$past.fruto,
 FL=teste1$data.flor,
 covar=teste1$data.rain,
 parms=x))
@@ -102,7 +104,7 @@ points(logis(resu2$par[3:4],cbind(1,seq(0,10,length=100))),type="l",ylim=c(0,1),
 points(logis(c(c,d),cbind(1,seq(0,10,length=100))),type="l",col=2,lty=2)
 
 
-NLL.flavio.logis(
+NLL.fruit.logis(
 N=teste1$fruto,
 FL=teste1$data.flor,
 FR=teste1$past.fruto,
@@ -110,7 +112,7 @@ covar=teste1$data.rain,
 parms=c(a,b,c,d)
 )
 
-NLL.flavio.logis(
+NLL.fruit.logis(
 N=teste1$fruto,
 FR=teste1$past.fruto,
 FL=teste1$data.flor,
@@ -126,7 +128,7 @@ like.logis.surf1<-matrix(NA,length(a.test),length(b.test))
 for (i in 1:length(a.test)){
 for (j in 1:length(a.test)){
 
-like.logis.surf1[i,j]<-NLL.flavio.logis(
+like.logis.surf1[i,j]<-NLL.fruit.logis(
 N=teste1$fruto,
 FL=teste1$data.flor,
 FR=teste1$past.fruto,
@@ -150,9 +152,7 @@ persp3d(b.test,a.test,(like.logis.surf1),col=heat.colors(100)[cut(z,100)],xlab="
 persp3d(b.test,a.test,exp(-z)*10^25,col=heat.colors(100)[cut(exp(-z),100)],xlab="b",ylab="a")
 
 
-
-points(resu$par[2],resu$par[1],pch=3,cex=1)
-
+points(resu2$par[2],resu2$par[1],pch=3,cex=1)
 
 
 
@@ -200,7 +200,7 @@ w1*dbinom(x,N1,p1,...)+w2*dbinom(x,N2,p2,...)
 nLLbinom2<-function(x,w1=.5,w2=1-w1,N1=10,N2=N1,p1=.7,p2=.3)
 -sum(dbinom2(x,w1=.5,w2=1-w1,N1=10,N2=10,p1=.7,p2=.3,log=T))
 
-nLLflavio<-function(y,x,parms=c(a=0,b=0,c=0,d=0,w1=0),N1=10,N2=N1){
+nLLfruit<-function(y,x,parms=c(a=0,b=0,c=0,d=0,w1=0),N1=10,N2=N1){
 p1=exp(cbind(1,x)%*%parms[1:((length(parms)-1)/2)])/(1+exp(cbind(1,x)%*%parms[1:((length(parms)-1)/2)]))
 p2=exp(cbind(1,x)%*%parms[(1+(length(parms)-1)/2):(length(parms)-1)])/(1+exp(cbind(1,x)%*%parms[(1+(length(parms)-1)/2):(length(parms)-1)]))
 #w1=parms[length(parms)]
@@ -216,9 +216,9 @@ x<-data$rain[data$date!=max(date)]
 N1<-data$flor[data$date!=max(date)]
 N2<-fruto[data$date!=max(date)]
 
-nLLflavio(y,x,N1=N1*2,N2=N2*2)
+nLLfruit(y,x,N1=N1*2,N2=N2*2)
 
-optim(par=c(5,-0.5,-1,0.5,1),nLLflavio,y=y,x=x,N1=N1*2,N2=N2*2)
+optim(par=c(5,-0.5,-1,0.5,1),nLLfruit,y=y,x=x,N1=N1*2,N2=N2*2)
 
 optim
 
@@ -229,7 +229,7 @@ prod(dbinom(15,10,.5))
 
 ### Debugging
 
-nLLflavio(2:5,5,parms=c(0,0,0,0,1),N1=2:5)
+nLLfruit(2:5,5,parms=c(0,0,0,0,1),N1=2:5)
 
 -sum(log(dbinom(2:5,2:5,.5)))
 
